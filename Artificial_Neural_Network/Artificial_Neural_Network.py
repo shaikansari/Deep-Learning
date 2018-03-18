@@ -41,16 +41,13 @@ from keras.layers import Dense
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-layer_info = Dense(activation='relu', input_dim=11, kernel_initializer='uniform', units=6)
-classifier.add(layer_info)
+classifier.add(Dense(activation='relu', input_dim=11, kernel_initializer='uniform', units=6))
 
 # Adding second hidden layer
-layer_info = Dense(activation='relu', kernel_initializer='uniform', units=6)
-classifier.add(layer_info)
+classifier.add(Dense(activation='relu', kernel_initializer='uniform', units=6))
 
 # Adding output layer
-layer_info = Dense(activation='sigmoid', kernel_initializer='uniform', units=1)
-classifier.add(layer_info)
+classifier.add(Dense(activation='sigmoid', kernel_initializer='uniform', units=1))
 
 # Compiling the ANN
 classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
