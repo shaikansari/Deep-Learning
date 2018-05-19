@@ -4,7 +4,7 @@
 # pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
 
 # Installing Tensorflow
-# Install Tensorflow from the website: https://www.tensorflow.org/versions/r0.12/get_started/os_setup.html
+# pip install tensorflow
 
 # Installing Keras
 # pip install --upgrade keras
@@ -13,7 +13,7 @@
 
 # Importing the Keras libraries and packages
 from keras.models import Sequential
-from keras.layers import Convolution2D
+from keras.layers import Conv2D
 from keras.layers import MaxPooling2D
 from keras.layers import Flatten
 from keras.layers import Dense
@@ -22,21 +22,21 @@ from keras.layers import Dense
 classifier = Sequential()
 
 # Step 1 - Convolution
-classifier.add(Convolution2D(32, 3, 3, input_shape = (64, 64, 3), activation = 'relu'))
+classifier.add(Conv2D(32, (3, 3), input_shape = (64, 64, 3), activation = 'relu'))
 
 # Step 2 - Pooling
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
 
 # Adding a second convolutional layer
-classifier.add(Convolution2D(32, 3, 3, activation = 'relu'))
+classifier.add(Conv2D(32, (3, 3), activation = 'relu'))
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
 
 # Step 3 - Flattening
 classifier.add(Flatten())
 
 # Step 4 - Full connection
-classifier.add(Dense(output_dim = 128, activation = 'relu'))
-classifier.add(Dense(output_dim = 1, activation = 'sigmoid'))
+classifier.add(Dense(units = 128, activation = 'relu'))
+classifier.add(Dense(units = 1, activation = 'sigmoid'))
 
 # Compiling the CNN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
@@ -63,7 +63,21 @@ test_set = test_datagen.flow_from_directory('dataset/test_set',
                                             class_mode = 'binary')
 
 classifier.fit_generator(training_set,
-                         samples_per_epoch = 8000,
-                         nb_epoch = 25,
+                         steps_per_epoch = 8000,
+                         epochs = 25,
                          validation_data = test_set,
-                         nb_val_samples = 2000)
+                         validation_steps = 2000)
+
+# Part 3 - Making new predictions
+
+import numpy as np
+from keras.preprocessing import image
+test_image = image.load_img('dataset/single_prediction/cat_or_dog_1.jpg', target_size = (64, 64))
+test_image = image.img_to_array(test_image)
+test_image = np.expand_dims(test_image, axis = 0)
+result = classifier.predict(test_image)
+training_set.class_indices
+if result[0][0] == 1:
+    prediction = 'dog'
+else:
+    prediction = 'cat'
