@@ -72,7 +72,7 @@ class RBM():
         self.W += torch.mm(v0.t(), ph0) - torch.mm(vk.t(), phk)
         self.b += torch.sum((v0 - vk), 0)
         self.a += torch.sum((ph0 - phk), 0)
-nv = len(training_set[0])
+nv = len(training_set[0]) #nb_users i.e 973
 nh = 100
 batch_size = 100
 rbm = RBM(nv, nh)
@@ -89,7 +89,7 @@ for epoch in range(1, nb_epoch + 1):
         for k in range(10):
             _,hk = rbm.sample_h(vk)
             _,vk = rbm.sample_v(hk)
-            vk[v0<0] = v0[v0<0]
+            vk[v0<0] = v0[v0<0] # we keep the movie rating -1 as it is for the movie user didn't watched.
         phk,_ = rbm.sample_h(vk)
         rbm.train(v0, vk, ph0, phk)
         train_loss += torch.mean(torch.abs(v0[v0>=0] - vk[v0>=0]))
